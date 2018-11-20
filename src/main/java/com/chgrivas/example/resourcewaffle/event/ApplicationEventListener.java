@@ -1,7 +1,7 @@
 package com.chgrivas.example.resourcewaffle.event;
 
 import com.chgrivas.example.resourcewaffle.resource.ResourceSynchronizationService;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 @Component
 public class ApplicationEventListener {
+
+  public static final String CLASSPATH_PHOTOS_PATTERN = "classpath:photos/*";
 
   private final ResourcePatternResolver resourcePatternResolver;
   private final ResourceSynchronizationService resourceSynchronizationService;
@@ -24,8 +26,8 @@ public class ApplicationEventListener {
   }
 
   @EventListener
-  public void onApplicationEvent(ContextRefreshedEvent event) throws IOException {
-    Resource[] resources = resourcePatternResolver.getResources("classpath:photos/*");
+  public void onApplicationEvent(ApplicationReadyEvent event) throws IOException {
+    Resource[] resources = resourcePatternResolver.getResources(CLASSPATH_PHOTOS_PATTERN);
     resourceSynchronizationService.sync(Arrays.asList(resources));
   }
 }
